@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -u
+: "$CHEZMOI_COMMAND_DIR"
+
+figlet -d $CHEZMOI_COMMAND_DIR"/resources/figlet-fonts" -f ANSI-Shadow $1
+

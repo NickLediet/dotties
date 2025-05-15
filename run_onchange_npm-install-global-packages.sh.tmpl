@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+figprint "Install NPM Globals..."
+
+npm i -g {{ range .packages.npm_globals -}} {{ . | quote}} {{end}}
