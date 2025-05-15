@@ -29,6 +29,7 @@
 - ctrl+r w/fzf for nx completions
 - faster nx completions
 - add dynamic light/dark mode with consisting theming accross appps (intellij, mac os, windows, cursor, vscode, tmux, everything)
+- add https://github.com/xo/usql
 
 ## WSL/Linux Support:
 
