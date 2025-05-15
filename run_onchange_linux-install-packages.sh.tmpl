@@ -1,4 +1,4 @@
-{{ if eq .chezmoi.os "linux" }}
+{{ if eq .chezmoi.os "linux" -}}
 #!/usr/bin/env bash
 
 echo "TODO: Update run_onchange_linux-packages.sh to be more platform specific"
@@ -12,5 +12,5 @@ echo "Updating apt dependencies..."
 sudo apt upgrade
 
 
-sudo apt install {{ range .packages.linux.apt }} {{ . | quote }} {{ end }}
-{{ end }}
+sudo apt install {{ range .packages.linux.apt }} {{ . | quote }} {{ end -}}
+{{ end -}}

@@ -1,4 +1,8 @@
 packages:
+  sdkman:
+    - java
+    - maven
+    - springboot
   npm_globals:
     - 'typescript'
     - 'typescript-language-server'
@@ -11,15 +15,13 @@ packages:
       - 'git'
       - 'jq'
       - 'tmux'
-      - 'gitleaks'
       - 'fzf'
       - 'zoxide'
       - 'wget'
       - 'neovim'
       # Todo: replace with sdkman
-      - 'apache-flink'
+      # - 'apache-flink'
       - 'redis'
-      - 'cassandra'
   # See: https://www.chezmoi.io/user-guide/advanced/install-packages-declaratively/
   darwin:
     taps:
