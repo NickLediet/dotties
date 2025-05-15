@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Install TPM
+TPM_PATH="${HOME}/.tmux/plugins/tpm"
+"$CHEZMOI_SOURCE_DIR/bin/figprint" "Installing TPM..."
+if [ -d "${TPM_PATH}" ]; then
+	echo "TPM is already Installed! Pulling updates..."
+	cd $TPM_PATH
+	git pull
+else
+	git clone https://github.com/tmux-plugins/tpm "${tpm_path}"
+fi
+
