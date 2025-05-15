@@ -85,7 +85,7 @@ git config --global alias.conflicts "diff --name-only --diff-filter=U"
 # Shell integrations
 eval "$(fzf --zsh)"
 eval "$(zoxide init zsh)"
-eval "$(jenv init -)"
+#eval "$(jenv init -)"
 
 
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
