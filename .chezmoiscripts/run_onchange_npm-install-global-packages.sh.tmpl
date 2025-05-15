@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-"$CHEZMOI_SOURCE_DIR/bin/figprint" "Installing NPM Globals"
-
-npm i -g {{ range .packages.npm_globals -}} {{ . | quote}} {{end}}
