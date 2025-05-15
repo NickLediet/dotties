@@ -25,6 +25,11 @@
 - [ ] Add Lando (Requires a custom install script)
 - [ ] Add tpm (Tmux package manager, requires custom install script)
 
+## Zsh improvements:
+- ctrl+r w/fzf for nx completions
+- faster nx completions
+- add dynamic light/dark mode with consisting theming accross appps (intellij, mac os, windows, cursor, vscode, tmux, everything)
+
 ## WSL/Linux Support:
 
 - [ ] Create a head & headless version
