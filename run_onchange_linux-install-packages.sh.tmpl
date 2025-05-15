@@ -1,0 +1,16 @@
+{{ if eq .chezmoi.os "linux" }}
+#!/bin/bash
+
+echo "TODO: Update run_onchange_linux-packages.sh to be more platform specific"
+
+
+"$CHEZMOI_SOURCE_DIR/bin/figprint" "Installing apt packages..."
+
+echo "Updating apt index..."
+sudo apt update
+echo "Updating apt dependencies..."
+sudo apt upgrade
+
+
+sudo apt install {{ range .packages.linux.apt }} {{ . | quote }} {{ end }}
+{{ end }}

@@ -1,3 +1,8 @@
+# Ordered: 
+
+- [ ] Create WSL/Linux script
+- [ ] Add Single line install script (but don't run it on mac yet~!!!!)
+- [ ] Setup SSH into windows Desktop from Macbook
 
 ## General:
 

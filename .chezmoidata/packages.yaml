@@ -3,6 +3,23 @@ packages:
     - 'typescript'
     - 'typescript-language-server'
     - 'graphql-language-service-cli'
+  linux:
+    # TODO: Implement snap & x-window packages (maybe get them to work with WSL?)
+    # snap:
+    # - 'ghostty'
+    apt:
+      - 'git'
+      - 'jq'
+      - 'tmux'
+      - 'gitleaks'
+      - 'fzf'
+      - 'zoxide'
+      - 'wget'
+      - 'neovim'
+      # Todo: replace with sdkman
+      - 'apache-flink'
+      - 'redis'
+      - 'cassandra'
   # See: https://www.chezmoi.io/user-guide/advanced/install-packages-declaratively/
   darwin:
     taps:
