@@ -53,4 +53,6 @@ alias install-npm-globals="$LIL_DOTTIES_PATH/install-npm-globals.sh"
 #
 
 # Load locally hidden aliases for work or machine specific overrides
-source ~/.zsh_aliases.local
+if [ -z ~/.zsh_aliases.local ]; then
+	source ~/.zsh_aliases.local
+fi
