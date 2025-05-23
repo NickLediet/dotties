@@ -34,6 +34,7 @@ packages:
       - 'tmux'
       - 'gitleaks'
       - 'fzf'
+      # A better alternative to cd: https://github.com/ajeetdsouza/zoxide
       - 'zoxide'
       - 'wget'
       - 'neovim'
@@ -41,7 +42,19 @@ packages:
       - 'maven'
       - 'apache-flink'
       - 'redis'
-      - 'cassandra'    
+      - 'cassandra'
+      # A rust powered grep alternative: https://github.com/BurntSushi/ripgrep
+      - 'ripgrep' # bin = rg
+      # A faster/better alternative to find: https://github.com/sharkdp/fd
+      - 'fd'
+      # A better alternative to cat: https://github.com/sharkdp/bat
+      - 'bat'
+      # A better alternative to ls: https://github.com/eza-community/eza
+      - 'eza'
+      # A better alternative to tree: https://github.com/sharkdp/bat
+      - 'bat'
+      # Better alternative to curl: https://github.com/ducaale/xh
+      - 'xh'
     casks:
       - 'font-ubuntu-mono-nerd-font'
       - 'ghostty'
