@@ -42,6 +42,9 @@ function mshell {
 }
 
 
+# Alias for chezmoi dot manager
+alias cm="chezmoi"
+
 # Lil Dotties paths
 LIL_DOTTIES_PATH="~/.config/.lil-dotties"
 echo "$LIL_DOTTIES_PATH"
