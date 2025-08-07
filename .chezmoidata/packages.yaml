@@ -43,6 +43,7 @@ packages:
       - 'apache-flink'
       - 'redis'
       - 'cassandra'
+      - 'podman-compose'
       # A rust powered grep alternative: https://github.com/BurntSushi/ripgrep
       - 'ripgrep' # bin = rg
       # A faster/better alternative to find: https://github.com/sharkdp/fd
