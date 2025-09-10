@@ -5,14 +5,20 @@
 ---@type ChadrcConfig
 local M = {}
 
-M.ui = { theme = 'catppuccin' }
+M.base46 = {
+	theme = "catppuccin",
 
--- Vim Settings
-vim.opt.relativenumber = true
-vim.opt.nu = true
-vim.o.statuscolumn = '%s %l %r %s'
+	-- hl_override = {
+	-- 	Comment = { italic = true },
+	-- 	["@comment"] = { italic = true },
+	-- },
+}
 
--- custom keymaps
-vim.keymap.set("n", "<leader>mg","<cmd> MavenExec <CR>")
+-- M.nvdash = { load_on_startup = true }
+-- M.ui = {
+--       tabufline = {
+--          lazyload = false
+--      }
+-- }
 
 return M

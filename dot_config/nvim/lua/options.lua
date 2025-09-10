@@ -1,6 +1,16 @@
 require "nvchad.options"
 
--- add yours here!
+local custom = {
+  opt = {
+    tabstop = 4,
+    expandtab = true,
+    relativenumber = true,
+    --termguicolors = true
+  }
+}
 
--- local o = vim.o
--- o.cursorlineopt ='both' -- to enable cursorline!
+for i, opts in pairs(custom) do
+  for k,v in pairs(opts) do
+    vim[i][k] = v
+  end
+end

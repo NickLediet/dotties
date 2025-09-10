@@ -56,6 +56,7 @@ packages:
       - 'bat'
       # Better alternative to curl: https://github.com/ducaale/xh
       - 'xh'
+      - 'opslevel/tap/opslevel-mcp'
     casks:
       - 'font-ubuntu-mono-nerd-font'
       - 'ghostty'
