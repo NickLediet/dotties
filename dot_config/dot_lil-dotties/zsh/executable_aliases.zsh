@@ -42,9 +42,11 @@ function mshell {
 }
 
 
+# Alias for chezmoi dot manager
+alias cm="chezmoi"
+
 # Lil Dotties paths
 LIL_DOTTIES_PATH="~/.config/.lil-dotties"
-echo "$LIL_DOTTIES_PATH"
 alias lil-edit="vim $LIL_DOTTIES_PATH"
 alias install-npm-globals="$LIL_DOTTIES_PATH/install-npm-globals.sh"
 # don't use unless you really want to
