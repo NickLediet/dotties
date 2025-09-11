@@ -16,9 +16,11 @@ fi
 
 # Source/Load zinit
 source "${ZINIT_HOME}/zinit.zsh"
-
+# Remove conflict zi aliases
+unalias zi
 # Zinit plugins
-zinit ice depth=1; zinit light romkatv/powerlevel10k
+zinit ice depth=1
+zinit light romkatv/powerlevel10k
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
 zinit light zsh-users/zsh-autosuggestions
@@ -27,7 +29,12 @@ zinit light Aloxaf/fzf-tab
 zinit snippet https://github.com/jscutlery/nx-completion/blob/main/nx-completion.plugin.zsh
 #zinit light jscutlery/nx-completion
 
-FPATH=/opt/homebrew/share/zsh-completions:~/.lil-src/completions/:$FPATH
+OS_NAME=$(uname)
+MAC_OS="Darwin"
+if [ "$OS_NAME" = "$MAC_OS" ];then
+    FPATH="opt/homebrew/share/zsh-completions":$FPATH
+fi
+FPATH="~/.lil-src/completions/":$FPATH
 # Load plugins
 
 autoload -Uz compinit bashcompinit
@@ -83,17 +90,14 @@ source "$HOME/.config/.lil-dotties/zsh/aliases.zsh"
 git config --global alias.conflicts "diff --name-only --diff-filter=U"
 
 # Shell integrations
-eval "$(fzf --zsh)"
+#if [ "$OS_NAME" = "$MAC_OS" ]; then
+    eval "$(fzf --zsh)"
+#fi
+    
 eval "$(zoxide init zsh)"
-eval "$(jenv init -)"
-
-
-### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
-export PATH="/Users/nle/.rd/bin:$PATH"
-### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
-
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 . "$HOME/.local/bin/env"
+
