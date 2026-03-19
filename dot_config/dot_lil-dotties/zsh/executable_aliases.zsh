@@ -41,6 +41,12 @@ function mshell {
   jshell --class-path "$(cat class-path.txt)":target/classes
 }
 
+# Send System notification
+function noti {
+  message=$1
+  osascript -e "display notification \"$message\""
+}
+
 
 # Alias for chezmoi dot manager
 alias cm="chezmoi"
