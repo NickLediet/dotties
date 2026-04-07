@@ -1,6 +1,7 @@
+{{ if ne .chezmoi.os "windows" -}}
 #!/usr/bin/env bash
 
-# Install TPM
+# Install TPM (skipped on Windows - tmux/tpm not supported)
 TPM_PATH="${HOME}/.tmux/plugins/tpm"
 "$CHEZMOI_SOURCE_DIR/bin/figprint" "Installing TPM..."
 if [ -d "${TPM_PATH}" ]; then
@@ -8,6 +9,6 @@ if [ -d "${TPM_PATH}" ]; then
 	cd $TPM_PATH
 	git pull
 else
-	git clone https://github.com/tmux-plugins/tpm "${tpm_path}"
+	git clone https://github.com/tmux-plugins/tpm "${TPM_PATH}"
 fi
-
+{{ end -}}
