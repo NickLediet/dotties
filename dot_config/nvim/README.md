@@ -25,27 +25,44 @@ This is a custom Neovim configuration built on [NvChad](https://nvchad.com/) v2.
 - **Java 17+** - Required for JDTLS (Java Language Server)
 - **Maven** or **Gradle** - For project dependency management
 
-#### Recommended: SDKMAN for Java Management
+#### SDKMAN Integration (Automatic)
 
-This configuration is optimized for [SDKMAN](https://sdkman.io/) which allows easy management of multiple JDK versions:
+This dotfiles repository uses [SDKMAN](https://sdkman.io/) for managing Java, Maven, and other JVM tools. **SDKMAN and JDKs are installed automatically** when you apply the dotfiles with chezmoi.
+
+The automatic installation includes:
+- **Java** - Temurin 21 (default), 17, and 11
+- **Maven** - Latest stable version
+- **Spring Boot CLI** - For Spring development
+
+See `.chezmoidata/packages.yaml` for the configured versions.
+
+##### Manual SDKMAN Commands
+
+If you need to manage Java versions manually:
 
 ```bash
-# Install SDKMAN
-curl -s "https://get.sdkman.io" | bash
+# List available Java versions
+sdk list java
 
-# Install a JDK (Java 17+)
-sdk install java 21.0.2-tem
+# Install a specific version
+sdk install java 21.0.3-tem
 
-# Set default JDK
-sdk default java 21.0.2-tem
+# Switch Java version for current session
+sdk use java 17.0.11-tem
+
+# Set default Java version
+sdk default java 21.0.3-tem
+
+# Check current versions
+sdk current
 ```
 
-The configuration automatically detects SDKMAN-managed Java installations at:
-- `~/.sdkman/candidates/java/current/bin/java`
+##### How Neovim Finds Java
 
-Alternative Java sources are also supported:
-- `$JAVA_HOME/bin/java`
-- System `java` command
+The Neovim Java configuration automatically detects Java in this priority order:
+1. `~/.sdkman/candidates/java/current/bin/java` (SDKMAN - preferred)
+2. `$JAVA_HOME/bin/java` (environment variable)
+3. System `java` command (fallback)
 
 ## Installation
 

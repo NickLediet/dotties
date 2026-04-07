@@ -17,8 +17,10 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply git@github.com:NickLediet/d
 
 This will:
 1. Clone the repository
-2. Apply configurations to your home directory
-3. Set up all dotfiles in their correct locations
+2. Install SDKMAN (if not already installed)
+3. Install Java, Maven, and Spring Boot CLI via SDKMAN
+4. Apply configurations to your home directory
+5. Set up all dotfiles in their correct locations
 
 ## What's Included
 
@@ -70,33 +72,46 @@ dotties/
 │   └── dot_lil-dotties/        # Additional shell configs
 ├── dot_zshrc                   # Zsh configuration
 ├── dot_p10k.zsh                # Powerlevel10k config
-├── .chezmoidata/               # Chezmoi data files
-│   └── packages.yaml           # Package definitions
-└── run_onchange_*.sh.tmpl      # Install scripts
+├── .chezmoidata/
+│   └── packages.yaml           # Package & SDK definitions
+├── run_onchange_before_install-sdkman.sh.tmpl    # SDKMAN installer
+├── run_onchange_after_install-sdkman-sdks.sh.tmpl # SDK installer (Java, Maven, etc.)
+└── run_onchange_*.sh.tmpl      # Other install scripts
 ```
 
 ## Java Development Setup
 
-This dotfiles repo is optimized for Java development with SDKMAN for managing multiple JDK versions.
+This dotfiles repo uses [SDKMAN](https://sdkman.io/) for managing Java, Maven, and other JVM tools. **SDKMAN is installed automatically** when you apply the dotfiles with chezmoi.
 
-### Install SDKMAN
+### What Gets Installed Automatically
+
+The following are installed via SDKMAN when you run `chezmoi apply`:
+
+| Tool | Versions | Notes |
+|------|----------|-------|
+| Java (Temurin) | 21 (default), 17, 11 | LTS versions |
+| Maven | 3.9.6 | Latest stable |
+| Spring Boot CLI | 3.2.5 | For Spring development |
+
+See `.chezmoidata/packages.yaml` to customize versions.
+
+### Managing Java Versions
 
 ```bash
-curl -s "https://get.sdkman.io" | bash
-source "$HOME/.sdkman/bin/sdkman-init.sh"
-```
+# List installed versions
+sdk current
 
-### Install a JDK
+# Switch Java version for current session
+sdk use java 17.0.11-tem
 
-```bash
-# List available JDKs
+# Set default Java version
+sdk default java 21.0.3-tem
+
+# List all available Java distributions
 sdk list java
 
-# Install Temurin JDK 21 (recommended)
-sdk install java 21.0.2-tem
-
-# Set as default
-sdk default java 21.0.2-tem
+# Install additional versions
+sdk install java 22.0.1-tem
 ```
 
 ### Why SDKMAN over Homebrew?
@@ -105,6 +120,7 @@ sdk default java 21.0.2-tem
 - **Consistent paths**: Standard paths that work well with build tools and IDEs
 - **Cross-platform**: Works the same on macOS and Linux
 - **Build tool integration**: Works seamlessly with Maven, Gradle, etc.
+- **No path conflicts**: Avoids the pathing issues that occur with Homebrew-installed JDKs
 
 The Neovim Java configuration automatically detects SDKMAN-managed JDKs at `~/.sdkman/candidates/java/current/`.
 
