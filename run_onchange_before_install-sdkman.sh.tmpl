@@ -1,0 +1,54 @@
+{{- if .packages.custom_install.sdkman.enabled -}}
+#!/usr/bin/env bash
+# Cross-platform SDKMAN installer
+# This script installs SDKMAN if not already present
+# Runs before package installation to ensure SDKMAN is available
+
+set -e
+
+"$CHEZMOI_SOURCE_DIR/bin/figprint" "Setting up SDKMAN..."
+
+SDKMAN_DIR="${SDKMAN_DIR:-$HOME/.sdkman}"
+SDKMAN_INIT="$SDKMAN_DIR/bin/sdkman-init.sh"
+
+if [[ -s "$SDKMAN_INIT" ]]; then
+    echo "SDKMAN is already installed at $SDKMAN_DIR"
+    echo "Checking for SDKMAN updates..."
+    
+    # Source SDKMAN to make sdk command available
+    export SDKMAN_DIR
+    source "$SDKMAN_INIT"
+    
+    # Self-update SDKMAN
+    sdk selfupdate force || echo "SDKMAN self-update skipped or failed (non-fatal)"
+else
+    echo "Installing SDKMAN..."
+    
+    # Check for required dependencies
+    if ! command -v curl &> /dev/null && ! command -v wget &> /dev/null; then
+        echo "Error: curl or wget is required to install SDKMAN"
+        exit 1
+    fi
+    
+    if ! command -v zip &> /dev/null || ! command -v unzip &> /dev/null; then
+        echo "Warning: zip/unzip recommended for SDKMAN"
+        # Try to install on common platforms
+        if command -v apt-get &> /dev/null; then
+            echo "Installing zip/unzip via apt..."
+            sudo apt-get update && sudo apt-get install -y zip unzip
+        elif command -v brew &> /dev/null; then
+            echo "Installing zip/unzip via brew..."
+            brew install zip unzip
+        fi
+    fi
+    
+    # Install SDKMAN using the official installer
+    # The installer is interactive by default, we make it non-interactive
+    export SDKMAN_DIR
+    curl -s "{{ .packages.custom_install.sdkman.install_url }}" | bash
+    
+    echo "SDKMAN installed successfully!"
+fi
+
+echo "SDKMAN setup complete."
+{{- end -}}

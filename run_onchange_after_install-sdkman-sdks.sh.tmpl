@@ -1,0 +1,110 @@
+{{- if .packages.custom_install.sdkman.enabled -}}
+#!/usr/bin/env bash
+# SDKMAN SDK installer
+# Installs and manages SDKs defined in .chezmoidata/packages.yaml
+# Runs after SDKMAN is installed
+
+set -e
+
+"$CHEZMOI_SOURCE_DIR/bin/figprint" "Installing SDKMAN SDKs..."
+
+SDKMAN_DIR="${SDKMAN_DIR:-$HOME/.sdkman}"
+SDKMAN_INIT="$SDKMAN_DIR/bin/sdkman-init.sh"
+
+if [[ ! -s "$SDKMAN_INIT" ]]; then
+    echo "Error: SDKMAN is not installed. Please run the SDKMAN installer first."
+    exit 1
+fi
+
+# Source SDKMAN to make sdk command available
+export SDKMAN_DIR
+source "$SDKMAN_INIT"
+
+# Disable interactive prompts for SDKMAN
+export SDKMAN_NON_INTERACTIVE=true
+
+install_sdk() {
+    local candidate="$1"
+    local version="$2"
+    
+    if [[ -z "$version" ]]; then
+        echo "Installing $candidate (latest)..."
+        if sdk install "$candidate" <<< "n" 2>/dev/null || sdk install "$candidate"; then
+            echo "✓ $candidate installed successfully"
+        else
+            echo "⚠ $candidate may already be installed or installation failed"
+        fi
+    else
+        echo "Installing $candidate $version..."
+        if sdk install "$candidate" "$version" <<< "n" 2>/dev/null || sdk install "$candidate" "$version"; then
+            echo "✓ $candidate $version installed successfully"
+        else
+            echo "⚠ $candidate $version may already be installed or installation failed"
+        fi
+    fi
+}
+
+set_default_sdk() {
+    local candidate="$1"
+    local version="$2"
+    
+    if [[ -n "$version" ]]; then
+        echo "Setting $candidate $version as default..."
+        sdk default "$candidate" "$version" 2>/dev/null || true
+    fi
+}
+
+echo "Installing Java SDKs..."
+{{- range $version := .packages.sdkman.java }}
+install_sdk "java" "{{ $version }}"
+{{- end }}
+
+# Set the first Java version as default
+{{- if .packages.sdkman.java }}
+{{- $firstJava := index .packages.sdkman.java 0 }}
+set_default_sdk "java" "{{ $firstJava }}"
+{{- end }}
+
+echo ""
+echo "Installing Maven..."
+{{- range $version := .packages.sdkman.maven }}
+install_sdk "maven" "{{ $version }}"
+{{- end }}
+
+# Set the first Maven version as default
+{{- if .packages.sdkman.maven }}
+{{- $firstMaven := index .packages.sdkman.maven 0 }}
+set_default_sdk "maven" "{{ $firstMaven }}"
+{{- end }}
+
+echo ""
+echo "Installing Spring Boot CLI..."
+{{- range $version := .packages.sdkman.springboot }}
+install_sdk "springboot" "{{ $version }}"
+{{- end }}
+
+# Set the first Spring Boot version as default
+{{- if .packages.sdkman.springboot }}
+{{- $firstSpringboot := index .packages.sdkman.springboot 0 }}
+set_default_sdk "springboot" "{{ $firstSpringboot }}"
+{{- end }}
+
+echo ""
+echo "=========================================="
+echo "SDKMAN SDK installation complete!"
+echo "=========================================="
+echo ""
+echo "Installed SDKs:"
+sdk current
+
+echo ""
+echo "To switch between versions, use:"
+echo "  sdk use java <version>"
+echo "  sdk use maven <version>"
+echo "  sdk use springboot <version>"
+echo ""
+echo "To list available versions:"
+echo "  sdk list java"
+echo "  sdk list maven"
+echo "  sdk list springboot"
+{{- end -}}
