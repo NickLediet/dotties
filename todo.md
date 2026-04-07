@@ -41,6 +41,9 @@
 - [ ] Create a head & headless version
 
 ## Windows Support:
-- [ ] Create windows specific version of `./run_onchange_darwin-install-packages.sh.tmpl`
+- [x] Create windows specific version of `./run_onchange_darwin-install-packages.sh.tmpl`
+- [x] Setup PowerShell prompt with Oh-My-Posh (matching Powerlevel10k rainbow theme)
+- [x] Add PowerShell profile configuration
+- [x] Add Windows package list to `.chezmoidata/packages.yaml`
 
 
