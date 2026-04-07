@@ -1,0 +1,38 @@
+# lil-dotties aliases
+# Auto-generated from .chezmoidata/aliases.yaml
+# This file is managed by chezmoi - do not edit directly!
+
+# =============================================================================
+# Common Aliases (cross-platform)
+# =============================================================================
+{{ range .aliases.common -}}
+{{ if .zsh -}}
+alias {{ .name }}={{ .zsh | quote }}
+{{ else -}}
+alias {{ .name }}={{ .command | quote }}
+{{ end -}}
+{{ end }}
+
+# =============================================================================
+# Unix-Only Aliases
+# =============================================================================
+{{ range .aliases.unix_only -}}
+alias {{ .name }}={{ .command | quote }}
+{{ end }}
+
+# =============================================================================
+# Functions
+# =============================================================================
+{{ range .functions -}}
+{{ if .zsh -}}
+{{ .zsh }}
+{{ end -}}
+{{ end }}
+
+# =============================================================================
+# Local Overrides
+# =============================================================================
+# Load locally hidden aliases for work or machine specific overrides
+if [ -f ~/.zsh_aliases.local ]; then
+	source ~/.zsh_aliases.local
+fi

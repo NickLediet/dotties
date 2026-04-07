@@ -1,0 +1,207 @@
+# Cross-platform alias definitions
+# This file serves as a single source of truth for aliases that work across shells.
+#
+# Structure:
+#   aliases:
+#     common:      - Aliases that work identically on all platforms/shells
+#     unix_only:   - Aliases only for zsh/bash (Linux/macOS)
+#     windows_only: - Aliases only for PowerShell (Windows)
+#
+# Each alias entry supports:
+#   - name: The alias name
+#   - command: The command to execute (simple alias)
+#   - zsh: Shell-specific command override for zsh
+#   - pwsh: Shell-specific command override for PowerShell
+#   - description: Optional description for documentation
+#
+# Functions are defined separately as they have different syntax per shell:
+#   functions:
+#     - name: Function name
+#       description: What it does
+#       zsh: |
+#         function body for zsh
+#       pwsh: |
+#         function body for PowerShell
+
+aliases:
+  # Common aliases that work the same across shells
+  common:
+    # Navigation & file listing
+    - name: c
+      command: clear
+      description: Clear the terminal screen
+
+    - name: ll
+      zsh: ls -la
+      pwsh: Get-ChildItem -Force
+      description: List all files including hidden
+
+    - name: vim
+      command: nvim
+      description: Use neovim as vim
+
+    # Git aliases
+    - name: gst
+      command: git status
+      description: Git status
+
+    - name: gadd
+      command: git add
+      description: Git add
+
+    - name: gcm
+      zsh: git commit -m
+      pwsh: git commit -m
+      description: Git commit with message
+
+    - name: gp
+      command: git push
+      description: Git push
+
+    # Kubernetes aliases
+    - name: k
+      command: kubectl
+      description: Kubectl shorthand
+
+    - name: kc
+      zsh: kubectl config
+      pwsh: kubectl config
+      description: Kubectl config
+
+    - name: kgc
+      zsh: kubectl config get-contexts
+      pwsh: kubectl config get-contexts
+      description: Get kubectl contexts
+
+    - name: ksc
+      zsh: kubectl config set-context
+      pwsh: kubectl config set-context
+      description: Set kubectl context
+
+    # Chezmoi alias
+    - name: cm
+      command: chezmoi
+      description: Chezmoi dotfile manager
+
+  # Unix-only aliases (zsh/bash on Linux/macOS)
+  unix_only:
+    - name: ls
+      command: ls --color
+      description: Colorized ls output
+
+    - name: reload
+      command: exec $SHELL
+      description: Reload the shell
+
+    - name: workspace
+      command: $HOME/.config/.lil-dotties/bin/workspace
+      description: Workspace management script
+
+    # tmux aliases
+    - name: tls
+      command: tmux list-sessions
+      description: List tmux sessions
+
+    - name: tks
+      command: tmux kill-session -t
+      description: Kill tmux session
+
+    - name: tas
+      command: tmux attach-session -t
+      description: Attach to tmux session
+
+    # config git alias ports (for bare git repo dotfiles)
+    - name: cst
+      command: config status
+      description: Config repo status
+
+    - name: cadd
+      command: config add
+      description: Config repo add
+
+    - name: ccm
+      command: config commit -m
+      description: Config repo commit
+
+    # Lil dotties specific
+    - name: lil-edit
+      command: vim ~/.config/.lil-dotties
+      description: Edit lil-dotties config
+
+    - name: install-npm-globals
+      command: ~/.config/.lil-dotties/install-npm-globals.sh
+      description: Install global npm packages
+
+  # Windows/PowerShell-only aliases
+  windows_only:
+    - name: which
+      command: Get-Command
+      description: Find command location (like Unix which)
+
+    - name: touch
+      command: New-Item -ItemType File
+      description: Create empty file (like Unix touch)
+
+    - name: grep
+      command: Select-String
+      description: Search text (like Unix grep)
+
+    - name: cat
+      command: Get-Content
+      description: Display file contents
+
+# Functions have different syntax per shell, so we define them separately
+functions:
+  # Docker nuke - remove all containers
+  - name: dnuke
+    description: Remove all docker containers
+    zsh: |
+      function dnuke {
+        docker rm $(docker ps -aq)
+      }
+    pwsh: |
+      function dnuke {
+        docker rm $(docker ps -aq)
+      }
+
+  # Java shell with classpath
+  - name: mshell
+    description: JShell with project classpath
+    zsh: |
+      function mshell {
+        jshell --class-path "$(cat class-path.txt)":target/classes
+      }
+    pwsh: |
+      function mshell {
+        $classpath = Get-Content class-path.txt
+        jshell --class-path "$classpath;target/classes"
+      }
+
+  # System notification
+  - name: noti
+    description: Send system notification
+    zsh: |
+      function noti {
+        message=$1
+        osascript -e "display notification \"$message\""
+      }
+    pwsh: |
+      function noti {
+        param([string]$message)
+        [System.Windows.Forms.MessageBox]::Show($message, "Notification")
+      }
+
+  # Lil dotties make wrapper
+  - name: lil
+    description: Run lil-dotties make target
+    zsh: |
+      function lil {
+        $(cd ~/.lil-src && make $1)
+      }
+    pwsh: |
+      function lil {
+        param([string]$target)
+        Push-Location ~/.lil-src
+        make $target
+        Pop-Location
+      }

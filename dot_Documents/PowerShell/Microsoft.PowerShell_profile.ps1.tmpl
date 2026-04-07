@@ -1,0 +1,41 @@
+{{ if eq .chezmoi.os "windows" -}}
+# lil-dotties PowerShell Profile
+# Auto-generated from .chezmoidata/aliases.yaml
+# This file is managed by chezmoi - do not edit directly!
+
+# =============================================================================
+# Common Aliases (cross-platform)
+# =============================================================================
+{{ range .aliases.common -}}
+{{ if .pwsh -}}
+function {{ .name }} { {{ .pwsh }} @args }
+{{ else if .command -}}
+function {{ .name }} { {{ .command }} @args }
+{{ end -}}
+{{ end }}
+
+# =============================================================================
+# Windows-Only Aliases
+# =============================================================================
+{{ range .aliases.windows_only -}}
+Set-Alias -Name {{ .name }} -Value {{ .command }} -Option AllScope -ErrorAction SilentlyContinue
+{{ end }}
+
+# =============================================================================
+# Functions
+# =============================================================================
+{{ range .functions -}}
+{{ if .pwsh -}}
+{{ .pwsh }}
+{{ end -}}
+{{ end }}
+
+# =============================================================================
+# Local Overrides
+# =============================================================================
+# Load locally hidden profile for work or machine specific overrides
+$localProfile = "$HOME\.powershell_profile.local.ps1"
+if (Test-Path $localProfile) {
+    . $localProfile
+}
+{{ end -}}
