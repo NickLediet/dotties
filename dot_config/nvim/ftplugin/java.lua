@@ -9,68 +9,6 @@ local function setup_jdtls()
     return
   end
 
-  -- Get Mason registry for tool paths
-  local mason_registry_ok, mason_registry = pcall(require, "mason-registry")
-  if not mason_registry_ok then
-    vim.notify("Mason registry not found. Run :Lazy sync to install plugins", vim.log.levels.WARN)
-    return
-  end
-
-  -- Ensure Mason registry is refreshed
-  if not mason_registry.is_installed "jdtls" then
-    vim.notify("jdtls not installed. Run :MasonInstall jdtls", vim.log.levels.WARN)
-    return
-  end
-
-  -- Safely get the jdtls package
-  local jdtls_pkg_ok, jdtls_pkg = pcall(mason_registry.get_package, "jdtls")
-  if not jdtls_pkg_ok or not jdtls_pkg then
-    vim.notify("Could not get jdtls package from Mason registry", vim.log.levels.WARN)
-    return
-  end
-
-  -- Safely get install path
-  local path_ok, jdtls_path = pcall(function()
-    return jdtls_pkg:get_install_path()
-  end)
-  if not path_ok or not jdtls_path then
-    vim.notify("Could not get jdtls install path. Mason may still be initializing.", vim.log.levels.WARN)
-    return
-  end
-
-  -- Find the launcher jar
-  local launcher_jar = vim.fn.glob(jdtls_path .. "/plugins/org.eclipse.equinox.launcher_*.jar")
-  if launcher_jar == "" then
-    vim.notify("JDTLS launcher jar not found at " .. jdtls_path, vim.log.levels.ERROR)
-    return
-  end
-
-  -- Determine OS-specific config directory
-  local os_config
-  if vim.fn.has "mac" == 1 then
-    os_config = jdtls_path .. "/config_mac"
-  elseif vim.fn.has "unix" == 1 then
-    os_config = jdtls_path .. "/config_linux"
-  else
-    os_config = jdtls_path .. "/config_win"
-  end
-
-  -- Lombok support (bundled with Mason's jdtls)
-  local lombok_jar = jdtls_path .. "/lombok.jar"
-  local lombok_agent = ""
-  if vim.fn.filereadable(lombok_jar) == 1 then
-    lombok_agent = "-javaagent:" .. lombok_jar
-  end
-
-  -- Utility function to find the root directory of a Java project
-  local function get_project_root()
-    return vim.fs.root(0, { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" }) or vim.fn.getcwd()
-  end
-
-  -- Workspace directory for JDTLS (per-project)
-  local project_name = vim.fn.fnamemodify(get_project_root(), ":p:h:t")
-  local workspace_dir = vim.fn.stdpath "data" .. "/jdtls-workspace/" .. project_name
-
   -- Find Java executable
   -- Supports SDKMAN, JAVA_HOME, or system java
   local function get_java_executable()
@@ -103,40 +41,155 @@ local function setup_jdtls()
     return
   end
 
-  -- Debug adapter paths (if installed)
+  -- Find JDTLS installation
+  -- Priority: 1) Manual install 2) Mason 3) Homebrew
+  local function find_jdtls()
+    local jdtls_locations = {
+      -- Manual installation in data directory (recommended)
+      vim.fn.stdpath "data" .. "/jdtls",
+      -- XDG data location
+      vim.fn.expand "$HOME/.local/share/jdtls",
+      -- Homebrew on macOS
+      "/opt/homebrew/opt/jdtls",
+      "/usr/local/opt/jdtls",
+      -- Linux package managers
+      "/usr/share/java/jdtls",
+    }
+
+    -- Also check Mason if available
+    local mason_registry_ok, mason_registry = pcall(require, "mason-registry")
+    if mason_registry_ok then
+      local ok, is_installed = pcall(mason_registry.is_installed, "jdtls")
+      if ok and is_installed then
+        local pkg_ok, jdtls_pkg = pcall(mason_registry.get_package, "jdtls")
+        if pkg_ok and jdtls_pkg then
+          local path_ok, mason_path = pcall(function()
+            return jdtls_pkg:get_install_path()
+          end)
+          if path_ok and mason_path then
+            table.insert(jdtls_locations, 1, mason_path)
+          end
+        end
+      end
+    end
+
+    for _, location in ipairs(jdtls_locations) do
+      local launcher = vim.fn.glob(location .. "/plugins/org.eclipse.equinox.launcher_*.jar")
+      if launcher ~= "" then
+        return location, launcher
+      end
+    end
+
+    return nil, nil
+  end
+
+  local jdtls_home, launcher_jar = find_jdtls()
+
+  if not jdtls_home then
+    vim.notify(
+      "JDTLS not found. Install it manually:\n"
+        .. "  mkdir -p ~/.local/share/jdtls\n"
+        .. "  cd ~/.local/share/jdtls\n"
+        .. "  curl -L -o jdtls.tar.gz https://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz\n"
+        .. "  tar -xzf jdtls.tar.gz\n"
+        .. "  rm jdtls.tar.gz",
+      vim.log.levels.WARN
+    )
+    return
+  end
+
+  -- Determine OS-specific config directory
+  local os_config
+  if vim.fn.has "mac" == 1 then
+    os_config = jdtls_home .. "/config_mac"
+  elseif vim.fn.has "unix" == 1 then
+    os_config = jdtls_home .. "/config_linux"
+  else
+    os_config = jdtls_home .. "/config_win"
+  end
+
+  -- Lombok support
+  local lombok_jar = jdtls_home .. "/lombok.jar"
+  local lombok_agent = ""
+  if vim.fn.filereadable(lombok_jar) == 1 then
+    lombok_agent = "-javaagent:" .. lombok_jar
+  end
+
+  -- Utility function to find the root directory of a Java project
+  local function get_project_root()
+    return vim.fs.root(0, { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" }) or vim.fn.getcwd()
+  end
+
+  -- Workspace directory for JDTLS (per-project)
+  local project_name = vim.fn.fnamemodify(get_project_root(), ":p:h:t")
+  local workspace_dir = vim.fn.stdpath "data" .. "/jdtls-workspace/" .. project_name
+
+  -- Debug adapter bundles (optional)
   local bundles = {}
 
-  -- Add java-debug-adapter
-  if mason_registry.is_installed "java-debug-adapter" then
-    local ok, java_debug_pkg = pcall(mason_registry.get_package, "java-debug-adapter")
-    if ok and java_debug_pkg then
-      local debug_path_ok, java_debug_path = pcall(function()
-        return java_debug_pkg:get_install_path()
-      end)
-      if debug_path_ok and java_debug_path then
-        local debug_jar = vim.fn.glob(java_debug_path .. "/extension/server/com.microsoft.java.debug.plugin-*.jar", true)
-        if debug_jar ~= "" then
-          table.insert(bundles, debug_jar)
+  -- Look for java-debug-adapter
+  local debug_locations = {
+    vim.fn.stdpath "data" .. "/java-debug/com.microsoft.java.debug.plugin/target",
+    vim.fn.expand "$HOME/.local/share/java-debug",
+  }
+
+  -- Check Mason for java-debug-adapter
+  local mason_registry_ok, mason_registry = pcall(require, "mason-registry")
+  if mason_registry_ok then
+    local ok, is_installed = pcall(mason_registry.is_installed, "java-debug-adapter")
+    if ok and is_installed then
+      local pkg_ok, pkg = pcall(mason_registry.get_package, "java-debug-adapter")
+      if pkg_ok and pkg then
+        local path_ok, path = pcall(function()
+          return pkg:get_install_path()
+        end)
+        if path_ok and path then
+          table.insert(debug_locations, 1, path .. "/extension/server")
         end
       end
     end
   end
 
-  -- Add java-test
-  if mason_registry.is_installed "java-test" then
-    local ok, java_test_pkg = pcall(mason_registry.get_package, "java-test")
-    if ok and java_test_pkg then
-      local test_path_ok, java_test_path = pcall(function()
-        return java_test_pkg:get_install_path()
-      end)
-      if test_path_ok and java_test_path then
-        local test_jars = vim.fn.glob(java_test_path .. "/extension/server/*.jar", true, true)
-        for _, jar in ipairs(test_jars) do
-          if not vim.endswith(jar, "com.microsoft.java.test.runner-jar-with-dependencies.jar") then
-            table.insert(bundles, jar)
-          end
+  for _, location in ipairs(debug_locations) do
+    local debug_jar = vim.fn.glob(location .. "/com.microsoft.java.debug.plugin-*.jar", true)
+    if debug_jar ~= "" then
+      table.insert(bundles, debug_jar)
+      break
+    end
+  end
+
+  -- Look for java-test
+  local test_locations = {
+    vim.fn.stdpath "data" .. "/vscode-java-test/server",
+    vim.fn.expand "$HOME/.local/share/vscode-java-test/server",
+  }
+
+  -- Check Mason for java-test
+  if mason_registry_ok then
+    local ok, is_installed = pcall(mason_registry.is_installed, "java-test")
+    if ok and is_installed then
+      local pkg_ok, pkg = pcall(mason_registry.get_package, "java-test")
+      if pkg_ok and pkg then
+        local path_ok, path = pcall(function()
+          return pkg:get_install_path()
+        end)
+        if path_ok and path then
+          table.insert(test_locations, 1, path .. "/extension/server")
         end
       end
+    end
+  end
+
+  for _, location in ipairs(test_locations) do
+    local test_jars = vim.fn.glob(location .. "/*.jar", true, true)
+    if #test_jars > 0 then
+      for _, jar in ipairs(test_jars) do
+        local fname = vim.fn.fnamemodify(jar, ":t")
+        if fname ~= "com.microsoft.java.test.runner-jar-with-dependencies.jar" and fname ~= "jacocoagent.jar" then
+          table.insert(bundles, jar)
+        end
+      end
+      break
     end
   end
 
@@ -163,7 +216,7 @@ local function setup_jdtls()
   end
 
   -- Add JVM arg to prevent metadata files in project root
-  table.insert(cmd, "--jvm-arg=-Djava.import.generatesMetadataFilesAtProjectRoot=false")
+  table.insert(cmd, "-Djava.import.generatesMetadataFilesAtProjectRoot=false")
 
   -- Add jar, config, and data arguments
   vim.list_extend(cmd, {
@@ -212,7 +265,7 @@ local function setup_jdtls()
     -- Setup keymaps
     java_keymaps(bufnr)
 
-    -- Setup DAP
+    -- Setup DAP if bundles are available
     if #bundles > 0 then
       require("jdtls.dap").setup_dap()
       require("jdtls.dap").setup_dap_main_class_configs()
@@ -235,6 +288,37 @@ local function setup_jdtls()
   local extendedClientCapabilities = jdtls.extendedClientCapabilities
   extendedClientCapabilities.resolveAdditionalTextEditsSupport = true
 
+  -- Configure available Java runtimes (SDKMAN support)
+  local java_runtimes = {}
+  local sdkman_java_dir = vim.fn.expand "$HOME/.sdkman/candidates/java"
+  if vim.fn.isdirectory(sdkman_java_dir) == 1 then
+    -- Scan for installed Java versions
+    local java_versions = vim.fn.glob(sdkman_java_dir .. "/*", false, true)
+    for _, java_path in ipairs(java_versions) do
+      local version_name = vim.fn.fnamemodify(java_path, ":t")
+      if version_name ~= "current" and vim.fn.isdirectory(java_path) == 1 then
+        -- Determine the runtime name based on version
+        local runtime_name
+        if version_name:match "^21" then
+          runtime_name = "JavaSE-21"
+        elseif version_name:match "^17" then
+          runtime_name = "JavaSE-17"
+        elseif version_name:match "^11" then
+          runtime_name = "JavaSE-11"
+        elseif version_name:match "^8" or version_name:match "^1%.8" then
+          runtime_name = "JavaSE-1.8"
+        end
+
+        if runtime_name then
+          table.insert(java_runtimes, {
+            name = runtime_name,
+            path = java_path,
+          })
+        end
+      end
+    end
+  end
+
   -- JDTLS configuration
   local config = {
     cmd = cmd,
@@ -246,10 +330,6 @@ local function setup_jdtls()
       java = {
         format = {
           enabled = true,
-          settings = {
-            url = vim.fn.stdpath "config" .. "/java-formatter.xml",
-            profile = "GoogleStyle",
-          },
         },
         signatureHelp = { enabled = true },
         contentProvider = { preferred = "fernflower" },
@@ -293,6 +373,7 @@ local function setup_jdtls()
         },
         configuration = {
           updateBuildConfiguration = "interactive",
+          runtimes = java_runtimes,
         },
         maven = {
           downloadSources = true,

@@ -70,14 +70,40 @@ After applying your dotfiles with chezmoi, the configuration will be available a
 
 ### First-time Setup
 
-1. **Open Neovim** - Lazy.nvim will automatically install plugins
-2. **Install Mason tools** - Run `:Mason` and install required tools:
-   ```
-   :MasonInstall jdtls java-debug-adapter java-test google-java-format lemminx
-   ```
-   Or let Mason auto-install them (configured in `lua/plugins/java.lua`)
+1. **Open Neovim** - Lazy.nvim will automatically install plugins (run `:Lazy sync` if needed)
 
-3. **Sync Treesitter parsers** - Run `:TSInstall all` or restart Neovim
+2. **Install JDTLS** (Eclipse Java Language Server) - Choose one method:
+
+   **Option A: Manual Install (Recommended)**
+   ```bash
+   mkdir -p ~/.local/share/jdtls
+   cd ~/.local/share/jdtls
+   curl -L -o jdtls.tar.gz https://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz
+   tar -xzf jdtls.tar.gz
+   rm jdtls.tar.gz
+   ```
+
+   **Option B: Homebrew (macOS)**
+   ```bash
+   brew install jdtls
+   ```
+
+   **Option C: Mason (may have issues)**
+   ```vim
+   :MasonInstall jdtls
+   ```
+
+3. **Install other Mason tools** (optional):
+   ```vim
+   :MasonInstall google-java-format lemminx
+   ```
+
+4. **Sync Treesitter parsers**:
+   ```vim
+   :TSInstall all
+   ```
+
+5. **Restart Neovim** and open a Java file to verify JDTLS starts
 
 ## Directory Structure
 
@@ -144,35 +170,66 @@ JDTLS workspace data is stored per-project at:
 
 ### Troubleshooting Java LSP
 
-1. **Check if jdtls is installed:**
-   ```vim
-   :Mason
+1. **Check if JDTLS is installed:**
+   ```bash
+   # Check manual install location
+   ls ~/.local/share/jdtls/plugins/org.eclipse.equinox.launcher_*.jar
+
+   # Or check Homebrew
+   ls /opt/homebrew/opt/jdtls/libexec/plugins/org.eclipse.equinox.launcher_*.jar
    ```
-   Look for `jdtls` and ensure it shows as installed.
 
 2. **Check LSP status:**
    ```vim
    :LspInfo
    ```
+   You should see `jdtls` listed as attached to the buffer.
 
-3. **View LSP logs:**
+3. **View JDTLS logs:**
+   ```vim
+   :JdtShowLogs
+   ```
+   Or check the LSP log:
    ```vim
    :lua vim.cmd('e ' .. vim.lsp.get_log_path())
    ```
 
-4. **Verify Java version:**
+4. **Verify Java version (must be 17+):**
    ```bash
-   java -version  # Should be 17+
+   java -version
+   # Or check SDKMAN
+   sdk current java
    ```
 
-5. **Force JDTLS restart:**
+5. **"JDTLS not found" error:**
+   Install JDTLS manually:
+   ```bash
+   mkdir -p ~/.local/share/jdtls && cd ~/.local/share/jdtls
+   curl -L -o jdtls.tar.gz https://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz
+   tar -xzf jdtls.tar.gz && rm jdtls.tar.gz
+   ```
+
+6. **Force JDTLS restart:**
    ```vim
    :JdtRestart
    ```
 
-6. **Update project configuration:**
+7. **Wipe corrupted workspace data:**
+   ```vim
+   :JdtWipeDataAndRestart
+   ```
+   Or manually delete: `~/.local/share/nvim/jdtls-workspace/<project-name>/`
+
+8. **Update project configuration:**
    ```vim
    :JdtUpdateConfig
+   ```
+
+9. **"Java XY language features not available":**
+   The config auto-detects SDKMAN-installed JDKs. Check that your project's Java version is installed:
+   ```bash
+   sdk list java
+   sdk install java 17.0.11-tem
    ```
 
 ## General Keymaps
