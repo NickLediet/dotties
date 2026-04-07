@@ -25,7 +25,7 @@
 
 ## Mac Support:
 
-- [ ] Migrate to sdkman to manage Jvm
+- [x] Migrate to sdkman to manage Jvm (Completed - see run_onchange_*_install-sdkman*.sh.tmpl scripts)
 - [ ] Add Podman (UI & CLI)
 - [ ] Add Lando (Requires a custom install script)
 - [ ] Add tpm (Tmux package manager, requires custom install script)
