@@ -53,6 +53,8 @@ packages:
       - 'zoxide'
       - 'wget'
       - 'neovim'
+      # Eclipse JDT Language Server for Java development in Neovim
+      - 'jdtls'
       # JVM tools now managed via SDKMAN (see packages.sdkman section)
       # - 'maven'        # Moved to sdkman
       # - 'apache-flink' # Can be installed via sdkman if needed
