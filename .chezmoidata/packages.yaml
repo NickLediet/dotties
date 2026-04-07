@@ -1,8 +1,25 @@
 packages:
+  # Custom install scripts that need to run before package managers
+  # These are typically tools that manage other dependencies
+  custom_install:
+    sdkman:
+      enabled: true
+      # SDKMAN installation URL - cross-platform installer
+      install_url: "https://get.sdkman.io"
+
+  # SDKman managed SDKs - format: "candidate" or "candidate@version"
+  # Use "sdk list <candidate>" to see available versions
+  # Leave version empty or omit @version to install latest stable
   sdkman:
-    - java
-    - maven
-    - springboot
+    java:
+      - "21.0.3-tem"    # Temurin 21 (LTS) - primary
+      - "17.0.11-tem"   # Temurin 17 (LTS) 
+      - "11.0.23-tem"   # Temurin 11 (LTS)
+    maven:
+      - "3.9.6"         # Latest stable Maven
+    springboot:
+      - "3.2.5"         # Spring Boot CLI
+
   npm_globals:
     - 'typescript'
     - 'typescript-language-server'
@@ -19,15 +36,13 @@ packages:
       - 'zoxide'
       - 'wget'
       - 'neovim'
-      # Todo: replace with sdkman
-      # - 'apache-flink'
+      # JVM tools now managed via SDKMAN (see packages.sdkman section)
+      # - 'apache-flink'  # Can be installed via sdkman if needed
       - 'redis'
   # See: https://www.chezmoi.io/user-guide/advanced/install-packages-declaratively/
   darwin:
     taps:
-      # Todo: Replace JDK versions with sdkman
-      # - 'AdoptOpenJDK/AdoptOpenJDK'
-      #- 'homebrew/cask-versions'
+      # Add any custom taps here
     brews:
       - 'git'
       - 'jq'
@@ -38,9 +53,9 @@ packages:
       - 'zoxide'
       - 'wget'
       - 'neovim'
-      # Todo: replace with sdkman
-      - 'maven'
-      - 'apache-flink'
+      # JVM tools now managed via SDKMAN (see packages.sdkman section)
+      # - 'maven'        # Moved to sdkman
+      # - 'apache-flink' # Can be installed via sdkman if needed
       - 'redis'
       - 'cassandra'
       - 'podman-compose'
@@ -52,8 +67,6 @@ packages:
       - 'bat'
       # A better alternative to ls: https://github.com/eza-community/eza
       - 'eza'
-      # A better alternative to tree: https://github.com/sharkdp/bat
-      - 'bat'
       # Better alternative to curl: https://github.com/ducaale/xh
       - 'xh'
       - 'opslevel/tap/opslevel-mcp'
@@ -61,10 +74,10 @@ packages:
       - 'font-ubuntu-mono-nerd-font'
       - 'ghostty'
       - 'raycast'
-      # Todo: Replace JDK versions with sdkman
-      - 'temurin@11'
-      - 'temurin@17'
-      - 'temurin@21'
+      # JDKs now managed via SDKMAN (see packages.sdkman section)
+      # - 'temurin@11'  # Moved to sdkman
+      # - 'temurin@17'  # Moved to sdkman
+      # - 'temurin@21'  # Moved to sdkman
 
 
 
