@@ -7,6 +7,26 @@ packages:
     - 'typescript'
     - 'typescript-language-server'
     - 'graphql-language-service-cli'
+  windows:
+    winget:
+      - 'JanDeDobbeleer.OhMyPosh'
+      - 'Git.Git'
+      - 'Microsoft.WindowsTerminal'
+      - 'Microsoft.PowerShell'
+      - 'Neovim.Neovim'
+      - 'sharkdp.fd'
+      - 'BurntSushi.ripgrep.MSVC'
+      - 'sharkdp.bat'
+      - 'eza-community.eza'
+      - 'ajeetdsouza.zoxide'
+      - 'junegunn.fzf'
+      - 'stedolan.jq'
+    pwsh_modules:
+      - 'PSReadLine'
+      - 'Terminal-Icons'
+      - 'PSFzf'
+    fonts:
+      - 'NerdFonts.UbuntuMono'
   linux:
     # TODO: Implement snap & x-window packages (maybe get them to work with WSL?)
     # snap:
