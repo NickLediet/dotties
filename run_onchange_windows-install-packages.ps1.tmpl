@@ -1,0 +1,58 @@
+{{ if eq .chezmoi.os "windows" -}}
+# Windows Package Installation Script
+# Managed by chezmoi - runs when package list changes
+
+Write-Host "`n========================================" -ForegroundColor Cyan
+Write-Host "Installing Windows packages via winget" -ForegroundColor Cyan  
+Write-Host "========================================`n" -ForegroundColor Cyan
+
+# Install winget packages
+$wingetPackages = @(
+{{ range .packages.windows.winget -}}
+    {{ . | quote }}
+{{ end -}}
+)
+
+foreach ($package in $wingetPackages) {
+    if ($package) {
+        Write-Host "Installing $package..." -ForegroundColor Yellow
+        winget install --id $package --accept-source-agreements --accept-package-agreements -e
+    }
+}
+
+Write-Host "`n========================================" -ForegroundColor Cyan
+Write-Host "Installing PowerShell modules" -ForegroundColor Cyan
+Write-Host "========================================`n" -ForegroundColor Cyan
+
+# Install PowerShell modules
+$psModules = @(
+{{ range .packages.windows.pwsh_modules -}}
+    {{ . | quote }}
+{{ end -}}
+)
+
+foreach ($module in $psModules) {
+    if ($module) {
+        Write-Host "Installing module: $module..." -ForegroundColor Yellow
+        if (-not (Get-Module -ListAvailable -Name $module)) {
+            Install-Module -Name $module -Scope CurrentUser -Force -AllowClobber
+        } else {
+            Write-Host "Module $module is already installed" -ForegroundColor Green
+        }
+    }
+}
+
+Write-Host "`n========================================" -ForegroundColor Green
+Write-Host "Package installation complete!" -ForegroundColor Green
+Write-Host "========================================`n" -ForegroundColor Green
+
+# Setup PowerShell profile if it doesn't exist
+$profileDir = Split-Path $PROFILE -Parent
+if (-not (Test-Path $profileDir)) {
+    New-Item -ItemType Directory -Path $profileDir -Force | Out-Null
+    Write-Host "Created PowerShell profile directory: $profileDir" -ForegroundColor Yellow
+}
+
+# Note: chezmoi will manage the actual profile content
+Write-Host "`nNote: Run 'chezmoi apply' to setup your PowerShell profile" -ForegroundColor Cyan
+{{ end -}}
