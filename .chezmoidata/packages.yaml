@@ -6,6 +6,10 @@ packages:
       enabled: true
       # SDKMAN installation URL - cross-platform installer
       install_url: "https://get.sdkman.io"
+    ollama:
+      enabled: true
+      # Ollama official Linux installer
+      install_url: "https://ollama.com/install.sh"
 
   # SDKman managed SDKs - format: "candidate" or "candidate@version"
   # Use "sdk list <candidate>" to see available versions
@@ -34,6 +38,7 @@ packages:
       - 'tmux'
       - 'fzf'
       - 'zoxide'
+      - 'curl'
       - 'wget'
       - 'neovim'
       # JVM tools now managed via SDKMAN (see packages.sdkman section)
@@ -73,6 +78,7 @@ packages:
     casks:
       - 'font-ubuntu-mono-nerd-font'
       - 'ghostty'
+      - 'ollama'
       - 'raycast'
       # JDKs now managed via SDKMAN (see packages.sdkman section)
       # - 'temurin@11'  # Moved to sdkman

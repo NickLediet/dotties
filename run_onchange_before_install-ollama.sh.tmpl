@@ -1,0 +1,29 @@
+{{- if and (eq .chezmoi.os "linux") .packages.custom_install.ollama.enabled -}}
+#!/usr/bin/env bash
+# Installs Ollama on Linux using the official installer.
+
+set -e
+
+"$CHEZMOI_SOURCE_DIR/bin/figprint" "Setting up Ollama..."
+
+if command -v ollama &> /dev/null; then
+    echo "Ollama is already installed:"
+    ollama --version || true
+    exit 0
+fi
+
+if ! command -v curl &> /dev/null; then
+    if command -v apt-get &> /dev/null; then
+        echo "Installing curl via apt..."
+        sudo apt-get update && sudo apt-get install -y curl
+    else
+        echo "Error: curl is required to install Ollama"
+        exit 1
+    fi
+fi
+
+echo "Installing Ollama..."
+curl -fsSL "{{ .packages.custom_install.ollama.install_url }}" | sh
+
+echo "Ollama setup complete."
+{{- end -}}
