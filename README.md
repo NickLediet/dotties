@@ -60,6 +60,33 @@ Tmux setup with:
 - Same prefix key (`ctrl+b`) as tmux for muscle memory
 - Agent state notifications and sound alerts
 - **Cross-platform clipboard support** - Native clipboard via `copy_on_select` (works on all platforms)
+- **Workspace keybindings** - Quick access to project directories via F-keys
+
+#### Herdr Workspace Quick-Access
+
+The herdr config includes workspace keybindings that replace the tmux workspace configs. Use F-keys to quickly open or focus workspaces:
+
+| Keybinding | Workspace | Description |
+|------------|-----------|-------------|
+| `ctrl+b F1` | dotfiles | Opens ~/.local/share/chezmoi |
+| `ctrl+b F2` | home | Opens home directory |
+| `ctrl+b F3-F12` | (customize) | Add your own project workspaces |
+
+To add custom workspace keybindings, edit `~/.config/herdr/config.toml` and add:
+
+```toml
+[[keys.command]]
+key = "prefix+f3"
+type = "shell"
+command = "herdr workspace create --cwd ~/projects/my-app --label my-app --no-focus || herdr workspace focus $(herdr workspace list | jq -r '.result.workspaces[] | select(.label == \"my-app\") | .workspace_id' | head -1)"
+description = "open my-app workspace"
+```
+
+#### Indexed Navigation
+
+Switch between workspaces and tabs by index:
+- `ctrl+b 1-9` - Switch to tab 1-9
+- `ctrl+b shift+1-9` - Switch to workspace 1-9
 
 ### Zsh Configuration
 
@@ -313,6 +340,12 @@ chezmoi init --apply git@github.com:NickLediet/dotties.git
 | `ctrl+b w` | Workspace picker | Session picker |
 | `ctrl+b ?` | Help | Same |
 | `ctrl+b shift+r` | Reload config | `prefix+r` |
+| `ctrl+b 1-9` | Switch to tab 1-9 | Same (windows) |
+| `ctrl+b shift+1-9` | Switch to workspace 1-9 | — |
+| `ctrl+b F1` | Open dotfiles workspace | Custom |
+| `ctrl+b F2` | Open home workspace | Custom |
+| `ctrl+b alt+g` | Lazygit popup | Custom |
+| `ctrl+b t` | Scratch terminal popup | Custom |
 
 ## Customization
 
