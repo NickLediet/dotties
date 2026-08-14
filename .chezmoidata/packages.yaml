@@ -6,6 +6,12 @@ packages:
       enabled: true
       # SDKMAN installation URL - cross-platform installer
       install_url: "https://get.sdkman.io"
+    herdr:
+      enabled: true
+      # Herdr - terminal multiplexer for AI coding agents
+      # https://herdr.dev/
+      install_url: "https://herdr.dev/install.sh"
+      install_url_windows: "https://herdr.dev/install.ps1"
 
   # SDKman managed SDKs - format: "candidate" or "candidate@version"
   # Use "sdk list <candidate>" to see available versions

@@ -50,6 +50,15 @@ Tmux setup with:
 - TPM (Tmux Plugin Manager) integration
 - Session management
 
+### Herdr Configuration
+
+[Herdr](https://herdr.dev/) - Terminal multiplexer optimized for AI coding agents:
+- Session persistence for AI agents (Claude Code, Codex, Cursor, etc.)
+- Catppuccin theme with auto light/dark switching
+- Vim-style keybindings (ported from tmux config)
+- Same prefix key (`ctrl+b`) as tmux for muscle memory
+- Agent state notifications and sound alerts
+
 ### Zsh Configuration
 
 Zsh setup featuring:
@@ -150,6 +159,18 @@ In Neovim, run:
 
 Press `<prefix> + I` in tmux to install TPM plugins.
 
+### 5. Verify Herdr Installation
+
+```bash
+# Check herdr is installed
+herdr --version
+
+# Start herdr (or attach to existing session)
+herdr
+
+# Detach with ctrl+b q
+```
+
 ## Platform Support
 
 | Platform | Status |
@@ -172,6 +193,70 @@ Or manually:
 chezmoi git pull
 chezmoi apply
 ```
+
+### Updating Herdr
+
+```bash
+herdr update
+```
+
+## Testing This Branch
+
+### On Your Mac
+
+To test this branch on your existing dotfiles setup:
+
+```bash
+# 1. Backup your current chezmoi state (optional but recommended)
+chezmoi diff > ~/chezmoi-backup.diff
+
+# 2. Change chezmoi source to this branch
+cd ~/.local/share/chezmoi
+git fetch origin
+git checkout cursor/add-herdr-cross-env-7cb8
+
+# 3. Preview what will change
+chezmoi diff
+
+# 4. Apply the changes
+chezmoi apply
+
+# 5. Verify herdr is installed
+herdr --version
+
+# 6. Start herdr
+herdr
+```
+
+### Restoring Original State
+
+To restore your previous configuration:
+
+```bash
+# Option A: Switch back to main branch
+cd ~/.local/share/chezmoi
+git checkout main
+chezmoi apply
+
+# Option B: Full re-initialization from main
+chezmoi init --apply git@github.com:NickLediet/dotties.git
+```
+
+### Herdr Keybindings Reference
+
+| Keybinding | Action | Tmux Equivalent |
+|------------|--------|-----------------|
+| `ctrl+b h/j/k/l` | Navigate panes (vim-style) | Same |
+| `ctrl+b v` | Split vertical (side-by-side) | `prefix+%` |
+| `ctrl+b -` | Split horizontal (stacked) | `prefix+"` |
+| `shift+left/right` | Previous/next tab | Same (windows) |
+| `ctrl+b c` | New tab | Same (window) |
+| `ctrl+b x` | Close pane | Same |
+| `ctrl+b z` | Toggle zoom | Same |
+| `ctrl+b q` | Detach | `prefix+d` |
+| `ctrl+b w` | Workspace picker | Session picker |
+| `ctrl+b ?` | Help | Same |
+| `ctrl+b shift+r` | Reload config | `prefix+r` |
 
 ## Customization
 

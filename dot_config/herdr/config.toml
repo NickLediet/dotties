@@ -1,0 +1,136 @@
+# Herdr Configuration
+# Terminal multiplexer for AI coding agents
+# https://herdr.dev/docs/configuration/
+#
+# Ported from tmux configuration with equivalent keybindings where applicable.
+# Run `herdr --default-config` to see all available options.
+
+# Skip first-run onboarding (we've already configured everything)
+onboarding = false
+
+# =============================================================================
+# Theme Configuration
+# =============================================================================
+# Matching the Catppuccin Mocha theme from tmux config
+[theme]
+name = "catppuccin"
+auto_switch = true
+dark_name = "catppuccin"
+light_name = "catppuccin-latte"
+
+# =============================================================================
+# Terminal Settings
+# =============================================================================
+[terminal]
+# Follow current pane's directory when creating new panes/tabs (like tmux default)
+new_cwd = "follow"
+# Auto-detect login shell for proper PATH setup (important for SDKMAN, Homebrew, etc.)
+shell_mode = "auto"
+
+# =============================================================================
+# Keybindings
+# =============================================================================
+# Ported from tmux.conf with same prefix key (ctrl+b)
+[keys]
+# Prefix key - same as tmux default
+prefix = "ctrl+b"
+
+# Vim-style pane navigation (matching tmux: bind h/j/k/l select-pane)
+focus_pane_left = "prefix+h"
+focus_pane_down = "prefix+j"
+focus_pane_up = "prefix+k"
+focus_pane_right = "prefix+l"
+
+# Tab/window switching (matching tmux: Shift+Arrow)
+# Note: Herdr uses "tabs" where tmux uses "windows"
+previous_tab = ["prefix+p", "shift+left"]
+next_tab = ["prefix+n", "shift+right"]
+
+# Split panes - similar to tmux vertical/horizontal splits
+# prefix+v for vertical split (side by side) - matches tmux bind 'v' copy-mode
+split_vertical = "prefix+v"
+# prefix+minus for horizontal split (stacked)
+split_horizontal = "prefix+minus"
+
+# Config reload (matching tmux: bind r source-file)
+reload_config = "prefix+shift+r"
+
+# Copy mode (matching tmux: bind 'v' copy-mode)
+copy_mode = "prefix+["
+
+# Pane/tab management
+close_pane = "prefix+x"
+close_tab = "prefix+shift+x"
+new_tab = "prefix+c"
+
+# Zoom/fullscreen toggle (matching tmux: prefix+z)
+zoom = "prefix+z"
+
+# Detach from session (matching tmux: prefix+d behavior)
+detach = "prefix+q"
+
+# Workspace navigation
+workspace_picker = "prefix+w"
+new_workspace = "prefix+shift+n"
+close_workspace = "prefix+shift+d"
+
+# Session navigation
+goto = "prefix+g"
+
+# Help
+help = "prefix+?"
+settings = "prefix+s"
+
+# =============================================================================
+# UI Configuration
+# =============================================================================
+[ui]
+# Mouse support enabled (matching tmux: set -g mouse on)
+mouse_capture = true
+copy_on_select = true
+
+# Pane visual settings
+pane_borders = true
+pane_gaps = true
+pane_scrollbars = true
+
+# Sidebar settings
+sidebar_start_collapsed = false
+
+# Confirm before closing workspace (safety feature)
+confirm_close = true
+
+# Tab bar position
+tab_bar_position = "top"
+
+# =============================================================================
+# Notification Settings
+# =============================================================================
+# Terminal notifications work well for SSH sessions (matching tmux workflow)
+[ui.toast]
+delivery = "terminal"
+delay_seconds = 1
+
+[ui.toast.clipboard]
+enabled = true
+position = "bottom-center"
+
+# =============================================================================
+# Sound Notifications
+# =============================================================================
+[ui.sound]
+enabled = true
+
+# =============================================================================
+# Session Management
+# =============================================================================
+[session]
+# Resume AI agents on session restore (key herdr feature)
+resume_agents_on_restore = true
+
+# =============================================================================
+# Update Settings
+# =============================================================================
+[update]
+channel = "stable"
+version_check = true

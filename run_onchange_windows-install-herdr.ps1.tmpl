@@ -1,0 +1,31 @@
+{{ if and (eq .chezmoi.os "windows") .packages.custom_install.herdr.enabled -}}
+# Herdr - terminal multiplexer for AI coding agents (Windows Beta)
+# https://herdr.dev/
+
+Write-Host "Installing Herdr..." -ForegroundColor Cyan
+
+# Check if herdr is already installed
+$herdrPath = Get-Command herdr -ErrorAction SilentlyContinue
+
+if ($herdrPath) {
+    Write-Host "Herdr is already installed." -ForegroundColor Green
+    Write-Host "To update, run: herdr update"
+} else {
+    Write-Host "Installing Herdr via official installer (Windows Beta)..."
+    
+    # Run the official Windows installer
+    powershell -ExecutionPolicy Bypass -c "irm {{ .packages.custom_install.herdr.install_url_windows }} | iex"
+    
+    # Verify installation
+    $herdrPath = Get-Command herdr -ErrorAction SilentlyContinue
+    if ($herdrPath) {
+        Write-Host "Herdr installed successfully!" -ForegroundColor Green
+    } else {
+        Write-Host "Warning: herdr not found in PATH after installation." -ForegroundColor Yellow
+        Write-Host "You may need to restart your terminal or add the install directory to PATH."
+    }
+}
+
+# Hash of herdr config for chezmoi change detection
+# {{ include "dot_config/herdr/config.toml" | sha256sum }}
+{{ end -}}

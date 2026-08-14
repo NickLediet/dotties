@@ -1,0 +1,30 @@
+{{ if and (ne .chezmoi.os "windows") .packages.custom_install.herdr.enabled -}}
+#!/usr/bin/env bash
+set -e
+
+"$CHEZMOI_SOURCE_DIR/bin/figprint" "Installing Herdr..."
+
+# Herdr - terminal multiplexer for AI coding agents
+# https://herdr.dev/
+
+# Check if herdr is already installed
+if command -v herdr >/dev/null 2>&1; then
+    echo "Herdr is already installed: $(herdr --version 2>/dev/null || echo 'version check failed')"
+    echo "To update, run: herdr update"
+else
+    echo "Installing Herdr via official installer..."
+    curl -fsSL "{{ .packages.custom_install.herdr.install_url }}" | sh
+    
+    # Verify installation
+    if command -v herdr >/dev/null 2>&1; then
+        echo "Herdr installed successfully: $(herdr --version 2>/dev/null || echo 'installed')"
+    else
+        echo "Warning: herdr not found in PATH after installation."
+        echo "The installer places herdr in ~/.local/bin by default."
+        echo "Ensure ~/.local/bin is in your PATH (this should already be configured via dot_local/bin/env)."
+    fi
+fi
+
+# Hash of herdr config for chezmoi change detection
+# {{ include "dot_config/herdr/config.toml" | sha256sum }}
+{{ end -}}
