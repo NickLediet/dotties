@@ -100,7 +100,6 @@ packages:
       - 'eza'
       # Better alternative to curl: https://github.com/ducaale/xh
       - 'xh'
-      - 'opslevel/tap/opslevel-mcp'
       # Herdr - terminal multiplexer for AI coding agents: https://herdr.dev/
       - 'herdr'
     casks:
