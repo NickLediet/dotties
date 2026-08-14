@@ -7,9 +7,10 @@ packages:
       # SDKMAN installation URL - cross-platform installer
       install_url: "https://get.sdkman.io"
     herdr:
-      enabled: true
+      enabled: false  # Now available via brew (darwin) and apt (linux)
       # Herdr - terminal multiplexer for AI coding agents
       # https://herdr.dev/
+      # Enable this for latest version directly from herdr.dev
       install_url: "https://herdr.dev/install.sh"
       install_url_windows: "https://herdr.dev/install.ps1"
 
@@ -65,6 +66,8 @@ packages:
       # JVM tools now managed via SDKMAN (see packages.sdkman section)
       # - 'apache-flink'  # Can be installed via sdkman if needed
       - 'redis'
+      # Herdr - terminal multiplexer for AI coding agents: https://herdr.dev/
+      - 'herdr'
   # See: https://www.chezmoi.io/user-guide/advanced/install-packages-declaratively/
   darwin:
     taps:
@@ -98,6 +101,8 @@ packages:
       # Better alternative to curl: https://github.com/ducaale/xh
       - 'xh'
       - 'opslevel/tap/opslevel-mcp'
+      # Herdr - terminal multiplexer for AI coding agents: https://herdr.dev/
+      - 'herdr'
     casks:
       - 'font-ubuntu-mono-nerd-font'
       - 'ghostty'
