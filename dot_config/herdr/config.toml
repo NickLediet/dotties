@@ -77,6 +77,10 @@ close_workspace = "prefix+shift+d"
 # Session navigation
 goto = "prefix+g"
 
+# Indexed workspace/tab switching (prefix+1-9 for tabs, prefix+shift+1-9 for workspaces)
+switch_tab = "prefix+1..9"
+switch_workspace = "prefix+shift+1..9"
+
 # Help
 help = "prefix+?"
 settings = "prefix+s"
@@ -134,3 +138,79 @@ resume_agents_on_restore = true
 [update]
 channel = "stable"
 version_check = true
+
+# =============================================================================
+# Workspace Command Keybindings
+# =============================================================================
+# Custom keybindings to quickly open project workspaces.
+# These replace the tmux workspace configs from ~/.config/.lil-dotties/tmux/workspaces.conf
+#
+# Usage:
+#   - prefix+F1-F12 for quick workspace access (F-keys avoid conflicts with numbered tabs)
+#   - Each command creates a new workspace in the specified directory
+#   - If the workspace for that directory already exists, herdr will focus it
+#
+# To add your own workspaces:
+#   1. Copy one of the [[keys.command]] blocks below
+#   2. Change the key binding (e.g., "prefix+f5")
+#   3. Update --cwd to your project path
+#   4. Update --label to your preferred workspace name
+#   5. Update the description for the help panel
+#
+# Common project paths (customize these for your environment):
+# - macOS: ~/Developer, ~/Projects, ~/Code
+# - Linux: ~/projects, ~/dev, ~/code
+# - Windows: C:\Users\<name>\source\repos
+
+# Example: Dotfiles workspace (this repo)
+[[keys.command]]
+key = "prefix+f1"
+type = "shell"
+command = "herdr workspace create --cwd ~/.local/share/chezmoi --label dotfiles --no-focus || herdr workspace focus $(herdr workspace list | jq -r '.result.workspaces[] | select(.label == \"dotfiles\") | .workspace_id' | head -1)"
+description = "open dotfiles workspace"
+
+# Example: Home workspace (general terminal in home directory)
+[[keys.command]]
+key = "prefix+f2"
+type = "shell"
+command = "herdr workspace create --cwd ~ --label home --no-focus || herdr workspace focus $(herdr workspace list | jq -r '.result.workspaces[] | select(.label == \"home\") | .workspace_id' | head -1)"
+description = "open home workspace"
+
+# =============================================================================
+# Additional Workspace Templates (uncomment and customize)
+# =============================================================================
+# Copy these templates and modify for your projects:
+#
+# [[keys.command]]
+# key = "prefix+f3"
+# type = "shell"
+# command = "herdr workspace create --cwd ~/projects/my-app --label my-app --no-focus || herdr workspace focus $(herdr workspace list | jq -r '.result.workspaces[] | select(.label == \"my-app\") | .workspace_id' | head -1)"
+# description = "open my-app workspace"
+#
+# [[keys.command]]
+# key = "prefix+f4"
+# type = "shell"
+# command = "herdr workspace create --cwd ~/work/project --label work --no-focus || herdr workspace focus $(herdr workspace list | jq -r '.result.workspaces[] | select(.label == \"work\") | .workspace_id' | head -1)"
+# description = "open work workspace"
+
+# =============================================================================
+# Utility Commands
+# =============================================================================
+
+# Quick lazygit popup (if installed)
+[[keys.command]]
+key = "prefix+alt+g"
+type = "popup"
+command = "lazygit || echo 'lazygit not installed: brew install lazygit'"
+description = "open lazygit"
+width = "90%"
+height = "90%"
+
+# Quick scratch terminal popup
+[[keys.command]]
+key = "prefix+t"
+type = "popup"
+command = "exec \"${SHELL:-sh}\""
+description = "scratch terminal popup"
+width = "80%"
+height = "80%"
