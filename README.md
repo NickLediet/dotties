@@ -49,6 +49,7 @@ Tmux setup with:
 - Theme configuration
 - TPM (Tmux Plugin Manager) integration
 - Session management
+- **Cross-platform clipboard support** - Auto-detects and uses the appropriate clipboard tool
 
 ### Herdr Configuration
 
@@ -58,6 +59,7 @@ Tmux setup with:
 - Vim-style keybindings (ported from tmux config)
 - Same prefix key (`ctrl+b`) as tmux for muscle memory
 - Agent state notifications and sound alerts
+- **Cross-platform clipboard support** - Native clipboard via `copy_on_select` (works on all platforms)
 
 ### Zsh Configuration
 
@@ -176,8 +178,62 @@ herdr
 | Platform | Status |
 |----------|--------|
 | macOS | ✅ Primary |
-| Linux/WSL | 🚧 In progress |
+| Linux/WSL | ✅ Supported |
 | Windows | 🚧 Planned |
+
+### Clipboard Setup by Platform
+
+The tmux configuration automatically detects and uses the appropriate clipboard tool for your platform. Herdr has native clipboard support that works out of the box.
+
+#### macOS
+- **tmux**: Uses `pbcopy` (native, no installation needed)
+- **herdr**: Native clipboard support via `copy_on_select`
+
+#### Linux (X11)
+- **tmux**: Install `xclip` (preferred) or `xsel`:
+  ```bash
+  # Debian/Ubuntu
+  sudo apt install xclip
+  # or
+  sudo apt install xsel
+  
+  # Fedora/RHEL
+  sudo dnf install xclip
+  # or
+  sudo dnf install xsel
+  
+  # Arch
+  sudo pacman -S xclip
+  # or
+  sudo pacman -S xsel
+  ```
+- **herdr**: Native clipboard support via `copy_on_select`
+
+#### Linux (Wayland)
+- **tmux**: Install `wl-clipboard`:
+  ```bash
+  # Debian/Ubuntu
+  sudo apt install wl-clipboard
+  
+  # Fedora/RHEL
+  sudo dnf install wl-clipboard
+  
+  # Arch
+  sudo pacman -S wl-clipboard
+  ```
+- **herdr**: Native clipboard support via `copy_on_select`
+
+#### WSL (Windows Subsystem for Linux)
+- **tmux**: Uses `clip.exe` (native Windows clipboard, no installation needed)
+- **herdr**: Native clipboard support via `copy_on_select`
+
+#### Detection Priority
+The tmux configuration checks for clipboard tools in this order:
+1. WSL (`clip.exe` when `$WSL_DISTRO_NAME` is set)
+2. Wayland (`wl-copy` when `$WAYLAND_DISPLAY` is set)
+3. X11 (`xclip` when `$DISPLAY` is set)
+4. X11 fallback (`xsel` when `$DISPLAY` is set and `xclip` is not available)
+5. macOS (`pbcopy`)
 
 ## Updating
 
