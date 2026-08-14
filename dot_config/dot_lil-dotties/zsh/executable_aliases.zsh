@@ -36,6 +36,12 @@ alias tls="tmux list-sessions"
 alias tks="tmux kill-session -t"
 alias tas="tmux attach-session -t"
 
+# herdr aliases - AI agent terminal multiplexer
+# https://herdr.dev/
+alias hd="herdr"                    # Start/attach to herdr
+alias hdu="herdr update"            # Update herdr to latest version
+alias hdc="herdr server reload-config"  # Reload herdr config
+
 # java aliases
 function mshell {
   jshell --class-path "$(cat class-path.txt)":target/classes
