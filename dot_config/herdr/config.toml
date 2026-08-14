@@ -126,6 +126,87 @@ position = "bottom-center"
 enabled = true
 
 # =============================================================================
+# Custom Command Bindings
+# =============================================================================
+# Custom keybindings for common workflows
+# Reference: https://herdr.dev/docs/configuration/#custom-command-keybindings
+
+# Lazygit popup - quick git operations in a floating pane
+[[keys.command]]
+key = "prefix+shift+g"
+command = "lazygit"
+popup = true
+popup_title = "lazygit"
+
+# htop system monitor popup
+[[keys.command]]
+key = "prefix+shift+h"
+command = "htop"
+popup = true
+popup_title = "htop"
+
+# Quick directory switching with fzf
+# Uses fd to find directories and fzf to select, then cd's to the selection
+[[keys.command]]
+key = "prefix+shift+f"
+command = "cd \"$(fd --type d --hidden --exclude .git --exclude node_modules | fzf --preview 'ls -la {}')\" && exec $SHELL"
+popup = true
+popup_title = "Find Directory"
+
+# Project file finder with fzf
+[[keys.command]]
+key = "prefix+shift+p"
+command = "nvim \"$(fd --type f --hidden --exclude .git --exclude node_modules | fzf --preview 'bat --style=numbers --color=always {}')\""
+popup = true
+popup_title = "Find File"
+
+# Live grep with ripgrep and fzf
+[[keys.command]]
+key = "prefix+/"
+command = "nvim \"$(rg --files-with-matches '' 2>/dev/null | fzf --preview 'rg --color=always --context=3 {} {q}' --bind 'change:reload:rg --files-with-matches {q} 2>/dev/null || true')\""
+popup = true
+popup_title = "Live Grep"
+
+# Quick notes/scratch pad
+[[keys.command]]
+key = "prefix+shift+s"
+command = "nvim ~/.scratch.md"
+popup = true
+popup_title = "Scratch Pad"
+
+# Docker container management with lazydocker (if available)
+[[keys.command]]
+key = "prefix+shift+o"
+command = "lazydocker"
+popup = true
+popup_title = "lazydocker"
+
+# NPM scripts runner with fzf (for JavaScript projects)
+[[keys.command]]
+key = "prefix+shift+j"
+command = "jq -r '.scripts | keys[]' package.json 2>/dev/null | fzf --preview 'jq -r \".scripts.{}\" package.json' | xargs -I {} npm run {}"
+popup = true
+popup_title = "NPM Scripts"
+
+# Cursor agent launcher - start new coding agent session
+[[keys.command]]
+key = "prefix+shift+a"
+command = "cursor --new-window ."
+popup = false
+
+# Open current directory in file manager (works on Linux with xdg-open, macOS with open)
+[[keys.command]]
+key = "prefix+shift+e"
+command = "open . 2>/dev/null || xdg-open . 2>/dev/null || explorer.exe ."
+popup = false
+
+# Reload shell environment (source rc files)
+[[keys.command]]
+key = "prefix+shift+."
+command = "exec $SHELL -l"
+popup = false
+
+# =============================================================================
 # Session Management
 # =============================================================================
 [session]
