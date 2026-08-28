@@ -44,6 +44,7 @@ packages:
       - 'eza-community.eza'
       - 'ajeetdsouza.zoxide'
       - 'junegunn.fzf'
+      - 'Casey.Just'
       - 'stedolan.jq'
     pwsh_modules:
       - 'PSReadLine'
@@ -98,6 +99,8 @@ packages:
       - 'bat'
       # A better alternative to ls: https://github.com/eza-community/eza
       - 'eza'
+      # A command runner: https://github.com/casey/just
+      - 'just'
       # Better alternative to curl: https://github.com/ducaale/xh
       - 'xh'
       # Herdr - terminal multiplexer for AI coding agents: https://herdr.dev/
