@@ -95,6 +95,23 @@ Zsh setup featuring:
 - Custom aliases
 - Development tool integrations (Java, Node, etc.)
 
+### Lazygit
+
+[Lazygit](https://github.com/jesseduffield/lazygit) — a simple terminal UI for git commands:
+
+- Installed via Homebrew on macOS, winget on Windows, and the official GitHub release on Linux
+- Catppuccin Mocha theme matching tmux, Neovim, and herdr
+- `lg` alias in zsh and PowerShell
+- Herdr popups: `ctrl+b shift+g` and `ctrl+b alt+g`
+- Tmux popup: `prefix+g`
+
+```bash
+# From any git repo
+lg
+# or
+lazygit
+```
+
 ## Directory Structure
 
 ```
@@ -107,6 +124,7 @@ dotties/
 │   │   │   └── configs/        # Plugin configurations
 │   │   └── ftplugin/           # Filetype-specific configs
 │   ├── tmux/                   # Tmux configuration
+│   ├── lazygit/                # Lazygit config (Catppuccin Mocha)
 │   └── dot_lil-dotties/        # Additional shell configs
 ├── dot_zshrc                   # Zsh configuration
 ├── dot_p10k.zsh                # Powerlevel10k config
@@ -188,7 +206,15 @@ In Neovim, run:
 
 Press `<prefix> + I` in tmux to install TPM plugins.
 
-### 5. Verify Herdr Installation
+### 5. Verify Lazygit Installation
+
+```bash
+lazygit --version
+# or
+lg
+```
+
+### 6. Verify Herdr Installation
 
 ```bash
 # Check herdr is installed
@@ -344,6 +370,7 @@ chezmoi init --apply git@github.com:NickLediet/dotties.git
 | `ctrl+b shift+1-9` | Switch to workspace 1-9 | — |
 | `ctrl+b F1` | Open dotfiles workspace | Custom |
 | `ctrl+b F2` | Open home workspace | Custom |
+| `ctrl+b shift+g` | Lazygit popup | Custom |
 | `ctrl+b alt+g` | Lazygit popup | Custom |
 | `ctrl+b t` | Scratch terminal popup | Custom |
 

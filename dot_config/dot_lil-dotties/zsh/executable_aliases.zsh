@@ -25,6 +25,8 @@ alias gst="git status"
 alias gadd="git add"
 alias gcm="git commit -m"
 alias gp="git push"
+# lazygit - simple terminal UI for git: https://github.com/jesseduffield/lazygit
+alias lg="lazygit"
 
 # config git alias ports
 alias cst="config status"

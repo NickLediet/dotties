@@ -88,6 +88,7 @@ function ga { git add $args }
 function gaa { git add --all }
 function gb { git branch $args }
 function glog { git log --oneline --graph --decorate -20 }
+function lg { lazygit $args }
 
 # Navigation
 function .. { Set-Location .. }
@@ -134,6 +135,10 @@ foreach ($path in $additionalPaths) {
         $env:PATH = "$path;$env:PATH"
     }
 }
+
+# Lazygit: use the chezmoi-managed XDG config on every platform
+# (Windows otherwise reads %LOCALAPPDATA%\lazygit\config.yml)
+$env:LG_CONFIG_FILE = "$HOME\.config\lazygit\config.yml"
 
 # Default editor
 if (Get-Command nvim -ErrorAction SilentlyContinue) {

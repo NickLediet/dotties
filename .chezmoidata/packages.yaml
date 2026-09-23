@@ -45,6 +45,7 @@ packages:
       - 'ajeetdsouza.zoxide'
       - 'junegunn.fzf'
       - 'Casey.Just'
+      - 'JesseDuffield.lazygit'
       - 'stedolan.jq'
     pwsh_modules:
       - 'PSReadLine'
@@ -69,6 +70,9 @@ packages:
       - 'redis'
       # Herdr - terminal multiplexer for AI coding agents: https://herdr.dev/
       - 'herdr'
+      # lazygit is not in Ubuntu 24.04 / Debian 12 apt; installed via
+      # run_onchange_linux-install-lazygit.sh.tmpl from GitHub releases
+      # https://github.com/jesseduffield/lazygit
   # See: https://www.chezmoi.io/user-guide/advanced/install-packages-declaratively/
   darwin:
     taps:
@@ -101,6 +105,8 @@ packages:
       - 'eza'
       # A command runner: https://github.com/casey/just
       - 'just'
+      # Simple terminal UI for git commands: https://github.com/jesseduffield/lazygit
+      - 'lazygit'
       # Better alternative to curl: https://github.com/ducaale/xh
       - 'xh'
       # Herdr - terminal multiplexer for AI coding agents: https://herdr.dev/
