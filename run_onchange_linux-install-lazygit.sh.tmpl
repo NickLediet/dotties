@@ -1,0 +1,73 @@
+{{ if eq .chezmoi.os "linux" -}}
+#!/usr/bin/env bash
+# Install lazygit on Linux.
+# Ubuntu 25.10+ / Debian 13+ ship lazygit in apt; earlier releases do not.
+# Falls back to the official GitHub release binary into ~/.local/bin.
+# https://github.com/jesseduffield/lazygit
+
+set -euo pipefail
+
+"$CHEZMOI_SOURCE_DIR/bin/figprint" "Installing LazyGit..."
+
+if command -v lazygit >/dev/null 2>&1; then
+    echo "LazyGit is already installed: $(lazygit --version 2>/dev/null || echo 'installed')"
+    exit 0
+fi
+
+if command -v apt-get >/dev/null 2>&1 && apt-cache show lazygit >/dev/null 2>&1; then
+    echo "Installing lazygit via apt..."
+    sudo apt-get install -y lazygit
+    lazygit --version
+    exit 0
+fi
+
+echo "lazygit is not available via apt; installing latest GitHub release..."
+
+if ! command -v curl >/dev/null 2>&1 && ! command -v wget >/dev/null 2>&1; then
+    echo "Error: curl or wget is required to install lazygit"
+    exit 1
+fi
+
+fetch() {
+    local url="$1"
+    local dest="$2"
+    if command -v curl >/dev/null 2>&1; then
+        curl -fsSL "$url" -o "$dest"
+    else
+        wget -qO "$dest" "$url"
+    fi
+}
+
+fetch_stdout() {
+    local url="$1"
+    if command -v curl >/dev/null 2>&1; then
+        curl -fsSL "$url"
+    else
+        wget -qO- "$url"
+    fi
+}
+
+LAZYGIT_VERSION="$(fetch_stdout "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" \
+    | grep -Po '"tag_name": *"v\K[^"]*')"
+if [[ -z "${LAZYGIT_VERSION}" ]]; then
+    echo "Error: could not determine the latest lazygit version from GitHub"
+    exit 1
+fi
+
+LAZYGIT_ARCH="$(uname -m | sed -e 's/aarch64/arm64/' -e 's/armv8l/arm64/' -e 's/armv7l/armv6/')"
+ARCHIVE_URL="https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_${LAZYGIT_ARCH}.tar.gz"
+
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
+
+echo "Downloading lazygit v${LAZYGIT_VERSION} (${LAZYGIT_ARCH})..."
+fetch "$ARCHIVE_URL" "$tmp/lazygit.tar.gz"
+tar -xf "$tmp/lazygit.tar.gz" -C "$tmp" lazygit
+
+install_dir="${HOME}/.local/bin"
+mkdir -p "$install_dir"
+install "$tmp/lazygit" -D -t "$install_dir"
+
+echo "LazyGit installed to ${install_dir}/lazygit"
+"$install_dir/lazygit" --version
+{{ end -}}

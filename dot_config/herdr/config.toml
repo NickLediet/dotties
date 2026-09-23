@@ -282,7 +282,7 @@ description = "open home workspace"
 [[keys.command]]
 key = "prefix+alt+g"
 type = "popup"
-command = "lazygit || echo 'lazygit not installed: brew install lazygit'"
+command = "lazygit || echo 'lazygit not installed: run chezmoi apply (or brew install lazygit)'"
 description = "open lazygit"
 width = "90%"
 height = "90%"

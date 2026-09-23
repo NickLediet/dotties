@@ -99,6 +99,7 @@ Get-PoshThemes
 | Alias | Command |
 |-------|---------|
 | `g` | `git` |
+| `lg` | `lazygit` |
 | `gst` | `git status` |
 | `gco` | `git checkout` |
 | `gcm` | `git commit -m` |
